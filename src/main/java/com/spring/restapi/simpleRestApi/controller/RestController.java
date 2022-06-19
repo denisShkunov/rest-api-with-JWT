@@ -16,32 +16,40 @@ public class RestController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> showAllEmployees(){
+    public List<Employee> showAllEmployees() {
         return employeeService.findAllEmployees();
     }
 
     @GetMapping("/employee/{id}")
-    public Employee showEmployeeById( @PathVariable(name = "id" ) long id){
+    public Employee showEmployeeById(@PathVariable(name = "id") long id) {
         return employeeService.findEmployeeById(id);
     }
 
     @DeleteMapping("/employee/{id}")
-    public String deleteEmployee(@PathVariable(name = "id") long id){
+    public String deleteEmployee(@PathVariable(name = "id") long id) {
         employeeService.deleteEmployee(id);
-        return "employee with id = "+id+"was deleted";
+        return "employee with id = " + id + "was deleted";
     }
 
     @PostMapping("/employee")
-    public Employee saveEmployee(@RequestBody Employee employee){
+    public Employee saveEmployee(@RequestBody Employee employee) {
         employeeService.saveEmployee(employee);
         return employee;
     }
 
 
-    //Необходимо исправить и добавить ID так чтобы спринг понимал mployee которого нужно изменить
-    @PutMapping("/employee")
-    public Employee updateEmployee(@RequestBody Employee employee){
-        employeeService.saveEmployee(employee);
-        return employee;
+    @PutMapping("/employee/{id}")
+    public Employee updateEmployee(@RequestBody Employee newEmployee
+            , @PathVariable(name = "id") long id) {
+        Employee employee = employeeService.findEmployeeById(id);
+        if (employee == null) {
+            employeeService.saveEmployee(newEmployee);
+            return newEmployee;
+        } else {
+            employee.setFirstName(newEmployee.getFirstName());
+            employee.setLastName(newEmployee.getLastName());
+            employee.setDepartment(newEmployee.getDepartment());
+            return employee;
+        }
     }
 }
