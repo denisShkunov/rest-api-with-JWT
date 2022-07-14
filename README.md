@@ -1,1 +1,1 @@
-Simple REST api 
+REST API with JWT auth
